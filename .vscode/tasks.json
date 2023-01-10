@@ -1,0 +1,26 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "windows (x64)",
+            "type": "shell",
+            "command": "dotnet publish -o ref -r win-x64 --no-self-contained",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "linux (x64)",
+            "type": "shell",
+            "command": "dotnet publish -o ref -r linux-x64 --no-self-contained",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        }
+    ]
+}

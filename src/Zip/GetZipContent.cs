@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Management.Automation;
-using ETL.File;
+using ETL.File.InputTypes;
 using System.Threading;
 using System.Text;
 using System.IO;
@@ -19,7 +19,7 @@ namespace ETL
     public class GetZipContent : PSCmdlet
     {
         [Parameter(Position = 0, ValueFromPipeline = true)]
-        public InStream Input { get; set; }
+        public StreamData Input { get; set; }
 
         [Parameter(ParameterSetName = "stream")]
         public SwitchParameter AsStream { get; set; }

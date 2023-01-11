@@ -4,7 +4,6 @@ using System.Drawing;
 using HtmlAgilityPack;
 using System.Data;
 using ExcelDataReader;
-using ETL.File;
 using System.IO;
 using ETL.SQL;
 using CsvHelper;
@@ -15,6 +14,7 @@ using CsvHelper.Configuration;
 using FastMember;
 using System.Linq;
 using dotenv.net;
+using ETL.File.InputTypes;
 
 
 namespace ETL
@@ -52,7 +52,7 @@ namespace ETL
             return (T)Enum.Parse(typeof(T), value, true);
         }
 
-        public static DataSet ExcelToDataSet(InStream inputFile, bool useHeader = true)
+        public static DataSet ExcelToDataSet(StreamData inputFile, bool useHeader = true)
         {
             return ExcelReaderFactory.CreateReader(inputFile.Stream).AsDataSet(new ExcelDataSetConfiguration()
             {
@@ -66,7 +66,7 @@ namespace ETL
             });
         }
 
-        public static DataSet ExcelToDataSet(InStream inputFile, bool useHeader
+        public static DataSet ExcelToDataSet(StreamData inputFile, bool useHeader
         , Func<IExcelDataReader, bool> rowFilter, Func<IExcelDataReader, int, bool> columnFilter)
         {
             return ExcelReaderFactory.CreateReader(inputFile.Stream).AsDataSet(new ExcelDataSetConfiguration()
@@ -143,12 +143,12 @@ namespace ETL
         ///<summary>
         /// returns plain CsvHelper.CsvReader object. Could be used to retreive parser (Parser property) or to use custom Config (different from defaultCsvConfig)
         ///</summary>
-        public static CsvReader GetCsvReader(InStream data, CsvConfiguration conf)
+        public static CsvReader GetCsvReader(StreamData data, CsvConfiguration conf)
         {
             return new CsvReader(new StreamReader(data.Stream), conf ?? defaultCsvConfig);
         }
 
-        public static CsvReader GetCsvReader(InStream data, String delim = ",", bool hasHeaders = true)
+        public static CsvReader GetCsvReader(StreamData data, String delim = ",", bool hasHeaders = true)
         {
             var conf = GetCsvConfig();
             conf.Delimiter = delim;
@@ -159,13 +159,13 @@ namespace ETL
         ///<summary>
         /// Convert CSV file/stream/bytes/filepath to datareader (string only columns)
         ///</summary>
-        public static IDataReader CsvToDataReader(InStream data, CsvConfiguration conf)
+        public static IDataReader CsvToDataReader(StreamData data, CsvConfiguration conf)
         {
             var csv = new CsvReader(new StreamReader(data.Stream), conf ?? defaultCsvConfig);
             return new CsvDataReader(csv);
         }
 
-        public static IDataReader CsvToDataReader(InStream data, String delim = ",", bool hasHeaders = true)
+        public static IDataReader CsvToDataReader(StreamData data, String delim = ",", bool hasHeaders = true)
         {
             var conf = GetCsvConfig();
             conf.Delimiter = delim;
@@ -175,7 +175,7 @@ namespace ETL
         }
 
 
-        public static IDataReader CsvToDataReaderGeneric<T>(InStream data, string delim = ",", bool hasHeaders = true)
+        public static IDataReader CsvToDataReaderGeneric<T>(StreamData data, string delim = ",", bool hasHeaders = true)
         {
             var conf = GetCsvConfig();
             conf.Delimiter = delim;
@@ -185,7 +185,7 @@ namespace ETL
             return ObjectReader.Create(ie);
         }
 
-        public static IDataReader CsvToDataReaderGeneric<T>(InStream data, CsvConfiguration conf)
+        public static IDataReader CsvToDataReaderGeneric<T>(StreamData data, CsvConfiguration conf)
         {
             var csv = new CsvReader(new StreamReader(data.Stream), conf ?? defaultCsvConfig);
             var ie = csv.GetRecords<T>();
@@ -195,13 +195,13 @@ namespace ETL
         ///<summary>
         /// Converts CSV file/stream/bytes/filepath to datareader using provided schema (type)
         ///</summary>
-        public static IDataReader CsvToDataReaderT(Type schema, InStream data, CsvConfiguration conf)
+        public static IDataReader CsvToDataReaderT(Type schema, StreamData data, CsvConfiguration conf)
         {
-            var GetRecordMethod = typeof(Util).GetMethod("CsvToDataReaderGeneric", new Type[] { typeof(InStream), typeof(CsvConfiguration) });
+            var GetRecordMethod = typeof(Util).GetMethod("CsvToDataReaderGeneric", new Type[] { typeof(StreamData), typeof(CsvConfiguration) });
             return GetRecordMethod.MakeGenericMethod(schema).Invoke(null, new Object[] { data, conf }) as IDataReader;
         }
 
-        public static IDataReader CsvToDataReaderT(Type schema, InStream data, string delim = ",", bool hasHeaders = true)
+        public static IDataReader CsvToDataReaderT(Type schema, StreamData data, string delim = ",", bool hasHeaders = true)
         {
             var conf = GetCsvConfig();
             conf.Delimiter = delim;
@@ -212,7 +212,7 @@ namespace ETL
         ///<summary>
         /// Converts CSV file/stream/bytes/filepath to datatable (all columns as string)
         ///</summary>
-        public static DataTable CsvToDataTable(InStream data)
+        public static DataTable CsvToDataTable(StreamData data)
         {
             using (data.Stream)
             using (var csv = new CsvReader(new StreamReader(data.Stream), defaultCsvConfig))
@@ -229,7 +229,7 @@ namespace ETL
         ///<summary>
         /// Converts CSV file/stream/bytes/filepath to datatable using provided schema (type)
         ///</summary>
-        public static DataTable CsvToDataTableT(InStream data, Type schema, CsvConfiguration conf)
+        public static DataTable CsvToDataTableT(StreamData data, Type schema, CsvConfiguration conf)
         {
             using (var reader = CsvToDataReaderT(schema, data, conf))
             {
@@ -239,7 +239,7 @@ namespace ETL
             }
         }
 
-        public static DataTable CsvToDataTableT(InStream data, Type schema, string delim, bool hasHeaders)
+        public static DataTable CsvToDataTableT(StreamData data, Type schema, string delim, bool hasHeaders)
         {
             var conf = GetCsvConfig();
             conf.Delimiter = delim;
@@ -256,7 +256,7 @@ namespace ETL
         ///<summary>
         /// Converts csv file/stream/path to IEnumerable<T> using type/schema
         ///</summary>
-        public static IEnumerable<dynamic> CsvToObjectsT(Type schema, InStream data, CsvConfiguration conf)
+        public static IEnumerable<dynamic> CsvToObjectsT(Type schema, StreamData data, CsvConfiguration conf)
         {
             var csv = new CsvReader(new StreamReader(data.Stream), conf ?? defaultCsvConfig);
             var GetRecordMethod = typeof(CsvReader).GetMethod("GetRecords", new Type[] { });
@@ -264,7 +264,7 @@ namespace ETL
             return GetRecordMethodGeneric.Invoke(csv, null) as IEnumerable<dynamic>;
         }
 
-        public static IEnumerable<dynamic> CsvToObjectsT(Type schema, InStream data, string delim = ",", bool hasHeaders = true)
+        public static IEnumerable<dynamic> CsvToObjectsT(Type schema, StreamData data, string delim = ",", bool hasHeaders = true)
         {
             var conf = GetCsvConfig();
             conf.Delimiter = delim;

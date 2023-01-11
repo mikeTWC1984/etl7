@@ -6,7 +6,7 @@ using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Text;
 using System.Collections.Generic;
-using ETL.File;
+using ETL.File.InputTypes;
 
 namespace ETL.Zip
 {
@@ -19,7 +19,7 @@ namespace ETL.Zip
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static Stream ReadTarGz(InStream input, Encoding enc = null)
+        public static Stream ReadTarGz(StreamData input, Encoding enc = null)
         {
             if (enc == null) enc = Encoding.UTF8;
             var gz = new GZipInputStream(input.Stream);
@@ -30,7 +30,7 @@ namespace ETL.Zip
         }
 
 
-        public static Stream ReadTarGz(InStream input, String fileName, Encoding enc = null)
+        public static Stream ReadTarGz(StreamData input, String fileName, Encoding enc = null)
         {
 
             if (enc == null) enc = Encoding.UTF8;
@@ -67,7 +67,7 @@ namespace ETL.Zip
         }
 
 
-        public static List<String> ReadTarGzLines(InStream input, Encoding enc = null)
+        public static List<String> ReadTarGzLines(StreamData input, Encoding enc = null)
         {
 
             var list = new List<String>();
@@ -89,7 +89,7 @@ namespace ETL.Zip
 
         }
 
-        public static Stream ReadTar(InStream input, Encoding enc = null)
+        public static Stream ReadTar(StreamData input, Encoding enc = null)
         {
 
             if (enc == null) enc = Encoding.UTF8;
@@ -97,21 +97,21 @@ namespace ETL.Zip
 
         }
 
-        public static Stream ReadGzip(InStream input)
+        public static Stream ReadGzip(StreamData input)
         {
 
             return new GZipInputStream(input.Stream);
 
         }
 
-        public static Stream ReadZip(InStream input)
+        public static Stream ReadZip(StreamData input)
         {
 
             return new ZipInputStream(input.Stream);
 
         }
 
-        public static Stream ReadZip(InStream input, String fileName)
+        public static Stream ReadZip(StreamData input, String fileName)
         {
             var zip = new ZipInputStream(input.Stream);
             var e = zip.GetNextEntry();

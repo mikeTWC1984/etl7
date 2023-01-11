@@ -11,7 +11,10 @@ namespace ETL.File.InputTypes
 
         public static explicit operator StreamData(String filePath)
         {
-            if (!(new System.IO.FileInfo(filePath)).Exists) { throw new Exception(filePath + " doesn't exist"); }
+            if (!(new System.IO.FileInfo(filePath)).Exists)
+            {
+                throw new Exception(filePath + " doesn't exist");
+            }
             return new StreamData(System.IO.File.OpenRead(filePath));
         }
         public static explicit operator StreamData(Byte[] bytes)

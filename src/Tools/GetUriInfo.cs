@@ -16,7 +16,7 @@ namespace ETL.Tools {
         {
             base.BeginProcessing();
 
-            WriteObject(ETL.Config.GetUriInfo(UriString));
+            WriteObject(ETL.Util.GetUriInfo(UriString));
 
         }
 

@@ -72,7 +72,7 @@ namespace ETL.File
         {
             if (!String.IsNullOrEmpty(Uri))
             {
-                var uriInfo = ETL.Config.GetUriInfo(Uri);
+                var uriInfo = ETL.Util.GetUriInfo(Uri);
                 Server = uriInfo.Host;
                 UserName = uriInfo.UserName;
                 Password = uriInfo.Password;
@@ -81,7 +81,7 @@ namespace ETL.File
 
             if (!String.IsNullOrEmpty(As))
             {
-                var cred = ETL.Config.GetNetworkCredential(As);
+                var cred = ETL.Util.GetNetworkCredential(As);
                 if (cred != null)
                 {
                     UserName = cred.UserName;
@@ -115,7 +115,7 @@ namespace ETL.File
             if (!UncPath.StartsWith("smb://")) UncPath = "smb://" + UncPath.TrimStart('\\').TrimStart('\\').Replace("\\", "/");
             NetworkCredential creds = null;
             if (Credential != null) creds = Credential.GetNetworkCredential();
-            if (!String.IsNullOrEmpty(As)) creds = ETL.Config.GetNetworkCredential(As);
+            if (!String.IsNullOrEmpty(As)) creds = ETL.Util.GetNetworkCredential(As);
 
             if (creds is null)
             {

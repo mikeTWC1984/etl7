@@ -36,7 +36,7 @@ namespace ETL.File
         {
             if (!String.IsNullOrEmpty(Uri))
             {
-                var uriInfo = ETL.Config.GetUriInfo(Uri);
+                var uriInfo = ETL.Util.GetUriInfo(Uri);
                 Server = uriInfo.Host;
                 UserName = uriInfo.UserName;
                 Password = uriInfo.Password;
@@ -45,7 +45,7 @@ namespace ETL.File
 
             if (!String.IsNullOrEmpty(As))
             {
-                var cred = ETL.Config.GetNetworkCredential(As);
+                var cred = ETL.Util.GetNetworkCredential(As);
                 if (cred != null)
                 {
                     UserName = cred.UserName;

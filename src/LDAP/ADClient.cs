@@ -34,7 +34,7 @@ namespace ETL.LDAP
 
         public ADClient(string loginServer, string credentialAlias, int port = 389, int version = 3) : this(
             loginServer,
-             ETL.Config.GetCredential(credentialAlias) ?? throw new Exception("Provided credential alias does not exist"),
+             ETL.Util.GetCredential(credentialAlias) ?? throw new Exception("Provided credential alias does not exist"),
              port,
              version
         )

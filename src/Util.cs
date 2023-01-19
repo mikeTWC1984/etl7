@@ -15,7 +15,8 @@ using FastMember;
 using System.Linq;
 using dotenv.net;
 using ETL.File.InputTypes;
-
+using System.Net;
+using System.Management.Automation;
 
 namespace ETL
 {
@@ -23,7 +24,7 @@ namespace ETL
     {
         public static String ResolveString(String str)
         {
-            return ETL.Config.GetString(str) ?? Environment.GetEnvironmentVariable(str) ?? str;
+            return Environment.GetEnvironmentVariable(str) ?? str;
         }
         public static String Fg(String message, String color = null)
         {
@@ -429,6 +430,35 @@ namespace ETL
                 ts.Hours,
                 ts.Minutes,
                 ts.Seconds);
+        }
+
+        public static PSCredential GetCredential(String credAlias)
+        {
+            var nc = GetNetworkCredential(credAlias);
+            return new PSCredential(nc.UserName, nc.SecurePassword);
+        }
+
+        public static NetworkCredential GetNetworkCredential(string credAlias)
+        {
+            var credStr = ETL.Util.ResolveString(credAlias) ?? "";
+            var userCheck = credStr.IndexOf(':');
+            if (String.IsNullOrWhiteSpace(credAlias) || userCheck < 0) throw new Exception("Invalid credential string");
+
+            return new System.Net.NetworkCredential(credStr.Substring(0, userCheck), credStr.Substring(userCheck + 1));
+
+        }
+
+        public static UriBuilder GetUriInfo(String uriString)
+        {
+            UriBuilder result = null;
+            try
+            {
+                result = new UriBuilder(ETL.Util.ResolveString(uriString));
+                result.Password = Uri.UnescapeDataString(result.Password);
+                result.UserName = Uri.UnescapeDataString(result.UserName);
+            }
+            catch { }
+            return result;
         }
     }
 

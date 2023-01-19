@@ -22,7 +22,7 @@ namespace ETL.SSH
 
         public static SftpClient GetSftpClient(String uri)
         {
-            var uriInfo = ETL.Config.GetUriInfo(uri);
+            var uriInfo = ETL.Util.GetUriInfo(uri);
             if(uriInfo == null) throw new Exception("Invalid URI string or alias");
             if(uriInfo.Port < 0) uriInfo.Port = 22;
             return new SftpClient(uriInfo.Host, uriInfo.Port, uriInfo.UserName, uriInfo.Password);
@@ -46,7 +46,7 @@ namespace ETL.SSH
 
         public static ScpClient GetScpClient(String uri)
         {
-            var uriInfo = ETL.Config.GetUriInfo(uri);
+            var uriInfo = ETL.Util.GetUriInfo(uri);
             if(uriInfo == null) throw new Exception("Invalid URI string or alias");
             if(uriInfo.Port < 0) uriInfo.Port = 22;
             return new ScpClient(uriInfo.Host, uriInfo.Port, uriInfo.UserName, uriInfo.Password);
@@ -70,7 +70,7 @@ namespace ETL.SSH
 
         public static SshClient GetSshClient(String uri)
         {
-            var uriInfo = ETL.Config.GetUriInfo(uri);
+            var uriInfo = ETL.Util.GetUriInfo(uri);
             if(uriInfo == null) throw new Exception("Invalid URI string or alias");
             if(uriInfo.Port < 0) uriInfo.Port = 22;
             return new SshClient(uriInfo.Host, uriInfo.Port, uriInfo.UserName, uriInfo.Password);
@@ -95,7 +95,7 @@ namespace ETL.SSH
 
         public static FtpClient GetFtpClient(String uri)
         {
-            var uriInfo = ETL.Config.GetUriInfo(uri);
+            var uriInfo = ETL.Util.GetUriInfo(uri);
             if(uriInfo == null) throw new Exception("Invalid URI string or alias");
             if(uriInfo.Port < 0) uriInfo.Port = 21;
             return new FtpClient(uriInfo.Host, uriInfo.UserName, uriInfo.Password, uriInfo.Port);
@@ -112,7 +112,7 @@ namespace ETL.SSH
 
         public static S3Client GetS3Client(String uri, String region = "us-east-1")
         {  // assumes uri is http[s]://accessKey:secretKey@hostname:port"
-            var uriInfo = ETL.Config.GetUriInfo(uri);
+            var uriInfo = ETL.Util.GetUriInfo(uri);
             if(uriInfo == null) throw new Exception("Invalid URI string or alias");
             return new S3Client(uriInfo.Uri.AbsoluteUri, uriInfo.UserName, uriInfo.Password, region);
         }

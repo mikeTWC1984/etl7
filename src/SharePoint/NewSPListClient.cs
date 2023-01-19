@@ -22,7 +22,7 @@ namespace ETL.SharePoint {
         protected override void BeginProcessing()
         {
             if(this.As != null) {
-                this.Credentials = ETL.Config.GetCredential(As);
+                this.Credentials = ETL.Util.GetCredential(As);
             }
 
             if (this.Credentials == null)

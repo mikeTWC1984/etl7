@@ -20,6 +20,9 @@ namespace ETL
         [Parameter(Position = 0)]
         public SqlDialect dialect = SqlDialect.SQL;
 
+        [Parameter(Position = 1)]
+        public String Name = "TEST";
+
 
         private DataTable _dt;
         protected override void ProcessRecord()
@@ -40,7 +43,7 @@ namespace ETL
 
             var sw = new System.IO.StringWriter();
 
-            sw.WriteLine("CREATE TABLE TEST (");
+            sw.WriteLine($"CREATE TABLE {Name} (");
             for (int i = 0; i < _dt.Columns.Count; i++) {
                 var col = _dt.Columns[i];
                 sw.WriteLine((i==0 ? "  " : ", ") + col.ColumnName + " " + SqlUtil.SQLTypeMap[dialect][col.DataType]);

@@ -17,6 +17,10 @@ using dotenv.net;
 using ETL.File.InputTypes;
 using System.Net;
 using System.Management.Automation;
+using Newtonsoft.Json;
+using System.Data.Common;
+using System.Dynamic;
+using Newtonsoft.Json.Linq;
 
 namespace ETL
 {
@@ -460,6 +464,49 @@ namespace ETL
             catch { }
             return result;
         }
+
+        public static IEnumerable<TResult> JsonToEnumerable<TResult>(Stream jsonStream)
+        {
+            var serializer = new JsonSerializer();
+
+            using (var reader = new StreamReader(jsonStream))
+            using (var jsonReader = new JsonTextReader(reader))
+            {
+                jsonReader.SupportMultipleContent = true;
+                
+                while (jsonReader.Read())
+                {
+                    yield return serializer.Deserialize<TResult>(jsonReader);
+                }
+            }
+        }
+
+        public static IEnumerable<dynamic> JsonToEnumerable(Stream jsonStream)
+        {
+            var serializer = new JsonSerializer();
+
+            using (var reader = new StreamReader(jsonStream))
+
+                
+                while (!reader.EndOfStream)
+                {
+                    yield return JObject.Parse(reader.ReadLine());
+                }
+            
+        }
+
+        public static DbDataReader JsonToDataReader<TResult>(Stream jsonStream)
+        {
+            return FastMember.ObjectReader.Create<TResult>(JsonToEnumerable<TResult>(jsonStream));
+        }
+
+        public static DbDataReader JsonToDataReader<TResult>(Stream jsonStream, params string[] members)
+        {
+            return FastMember.ObjectReader.Create<TResult>(JsonToEnumerable<TResult>(jsonStream), members);
+        }
+
+
+    ///////   ------------------------- UTIL ----------------------------- ////
     }
 
     // formatter for forms of

@@ -6,17 +6,17 @@
         {
             "label": "windows (x64)",
             "type": "shell",
-            "command": "dotnet publish -o ref -r win-x64 --no-self-contained",
+            "command": "dotnet publish -o etl --no-self-contained",
             "group": {
                 "kind": "build",
-                "isDefault": false
+                "isDefault": true
             },
             "problemMatcher": []
         },
         {
             "label": "linux (x64)",
             "type": "shell",
-            "command": "dotnet publish -o refl -r linux-x64 --no-self-contained",
+            "command": "dotnet publish -o etl -r linux-x64 --no-self-contained",
             "group": {
                 "kind": "build",
                 "isDefault": false

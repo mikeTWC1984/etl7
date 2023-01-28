@@ -1,6 +1,5 @@
 
-
-# docker build --progress=plain -t etl:base -f etl_base.yaml .
+# docker build --progress=plain -t etl:base -f etl_base.dockerfile .
 
 # install powershell, node, kcat, mc
 FROM etl:core

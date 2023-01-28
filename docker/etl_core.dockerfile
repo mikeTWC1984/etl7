@@ -1,5 +1,5 @@
 
-# docker build --progress=plain -t etl:core -f etl_core.yaml .
+# docker build --progress=plain -t etl:core -f etl_core.dockerfile .
 
 FROM alpine:3.16 as core
 

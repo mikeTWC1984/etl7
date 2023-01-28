@@ -1,4 +1,4 @@
-# docker build --progress=plain -t scheduler -f etl_scheduler.yaml .
+# docker build --progress=plain -t etl:scheduler -f etl_scheduler.dockerfile .
 
 
 # build etl 
